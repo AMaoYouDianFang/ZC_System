@@ -360,6 +360,12 @@
         gradeID = #{gradeid,jdbcType=INTEGER}
     </select>
 
+    <select id="countStuByCampus" resultType="java.lang.Integer" >
+        select count(*) from stu
+        WHERE
+        campusID = #{campusid,jdbcType=INTEGER}
+    </select>
+
     <select id="countStuByDate" resultType="java.lang.Integer" >
         select count(*) from stu
         WHERE
@@ -618,7 +624,8 @@
         supportTextHis = #{supporttexthis,jdbcType=VARCHAR},
         improveTextHis = #{improvetexthis,jdbcType=VARCHAR},
         checkDate = #{checkdate,jdbcType=DATE},
-        gradeID = #{gradeid,jdbcType=INTEGER}
+        gradeID = #{gradeid,jdbcType=INTEGER},
+        campusID = #{campusid,jdbcType=INTEGER}
         where stuID = #{stuid,jdbcType=INTEGER}
     </update>
 

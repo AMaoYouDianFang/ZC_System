@@ -77,12 +77,33 @@
         limit #{toPageNo}, #{pageSize}
     </select>
 
+    <select id="selectByCampus" parameterType="com.system.po.PagingVO" resultType="com.system.po.StuCustom">
+        select
+        stu.*, grade.gradeName
+        from stu, grade
+        WHERE
+        stu.campusID = #{intergertemp, jdbcType=INTEGER}
+        AND
+        stu.gradeID = grade.gradeID
+        limit #{toPageNo}, #{pageSize}
+    </select>
+
     <select id="selectAllByGrade" parameterType="java.lang.Integer" resultType="com.system.po.StuCustom">
         select
         stu.*, grade.gradeName
         from stu, grade
         WHERE
         stu.gradeID = #{gradeid, jdbcType=INTEGER}
+        AND
+        stu.gradeID = grade.gradeID
+    </select>
+
+    <select id="selectAllByCampus" parameterType="java.lang.Integer" resultType="com.system.po.StuCustom">
+        select
+        stu.*, grade.gradeName
+        from stu, grade
+        WHERE
+        stu.campusID = #{campusid, jdbcType=INTEGER}
         AND
         stu.gradeID = grade.gradeID
     </select>
@@ -115,14 +136,19 @@
         WHERE
         stu.gradeID = grade.gradeID
         AND  <!--不跨年的查询-->
-        DATEDIFF(CAST(CONCAT(YEAR(NOW()),DATE_FORMAT(stu.stuBirth,'-%m-%d'))AS DATE),CAST(DATE_FORMAT(NOW(),'%y-%m-%d') AS DATE)) = 7
-        OR   <!--or后面的解决跨年问题-->
-        DATEDIFF(CAST(CONCAT(YEAR(NOW())+1,DATE_FORMAT(stu.stuBirth,'-%m-%d'))AS DATE),CAST(DATE_FORMAT(NOW(),'%y-%m-%d') AS DATE)) = 7
-        OR <!--补充闰年2月29日的生日方法-->
         (
-        f_not_leap_year(YEAR(NOW()))
-        AND DATE_FORMAT(stu.stuBirth,'-%m-%d')= '-02-29'
-        AND DATEDIFF(CAST(CONCAT('2000',DATE_FORMAT(stu.stuBirth,'-%m-%d'))AS DATE),CAST(CONCAT('2000',DATE_FORMAT(NOW(),'-%m-%d')) AS DATE)) = 7)
+            DATEDIFF(CAST(CONCAT(YEAR(NOW()),DATE_FORMAT(stu.stuBirth,'-%m-%d'))AS DATE),CAST(DATE_FORMAT(NOW(),'%y-%m-%d')
+            AS DATE)) = 7
+            OR   <!--or后面的解决跨年问题-->
+            DATEDIFF(CAST(CONCAT(YEAR(NOW())+1,DATE_FORMAT(stu.stuBirth,'-%m-%d'))AS
+            DATE),CAST(DATE_FORMAT(NOW(),'%y-%m-%d') AS DATE)) = 7
+            OR <!--补充闰年2月29日的生日方法-->
+            (
+            f_not_leap_year(YEAR(NOW()))
+            AND DATE_FORMAT(stu.stuBirth,'-%m-%d')= '-02-29'
+            AND DATEDIFF(CAST(CONCAT('2000',DATE_FORMAT(stu.stuBirth,'-%m-%d'))AS
+            DATE),CAST(CONCAT('2000',DATE_FORMAT(NOW(),'-%m-%d')) AS DATE)) = 7)
+        )
     </select>
 
     <select id="selectByFatherBirth"  resultType="com.system.po.StuCustom">
@@ -132,14 +158,19 @@
         WHERE
         stu.gradeID = grade.gradeID
         AND  <!--不跨年的查询-->
-        DATEDIFF(CAST(CONCAT(YEAR(NOW()),DATE_FORMAT(stu.fatherBirth,'-%m-%d'))AS DATE),CAST(DATE_FORMAT(NOW(),'%y-%m-%d') AS DATE)) = 7
-        OR   <!--or后面的解决跨年问题-->
-        DATEDIFF(CAST(CONCAT(YEAR(NOW())+1,DATE_FORMAT(stu.fatherBirth,'-%m-%d'))AS DATE),CAST(DATE_FORMAT(NOW(),'%y-%m-%d') AS DATE)) = 7
-        OR <!--补充闰年2月29日的生日方法-->
         (
-        f_not_leap_year(YEAR(NOW()))
-        AND DATE_FORMAT(stu.fatherBirth,'-%m-%d')= '-02-29'
-        AND DATEDIFF(CAST(CONCAT('2000',DATE_FORMAT(stu.fatherBirth,'-%m-%d'))AS DATE),CAST(CONCAT('2000',DATE_FORMAT(NOW(),'-%m-%d')) AS DATE)) = 7)
+            DATEDIFF(CAST(CONCAT(YEAR(NOW()),DATE_FORMAT(stu.fatherBirth,'-%m-%d'))AS
+            DATE),CAST(DATE_FORMAT(NOW(),'%y-%m-%d') AS DATE)) = 7
+            OR   <!--or后面的解决跨年问题-->
+            DATEDIFF(CAST(CONCAT(YEAR(NOW())+1,DATE_FORMAT(stu.fatherBirth,'-%m-%d'))AS
+            DATE),CAST(DATE_FORMAT(NOW(),'%y-%m-%d') AS DATE)) = 7
+            OR <!--补充闰年2月29日的生日方法-->
+            (
+            f_not_leap_year(YEAR(NOW()))
+            AND DATE_FORMAT(stu.fatherBirth,'-%m-%d')= '-02-29'
+            AND DATEDIFF(CAST(CONCAT('2000',DATE_FORMAT(stu.fatherBirth,'-%m-%d'))AS
+            DATE),CAST(CONCAT('2000',DATE_FORMAT(NOW(),'-%m-%d')) AS DATE)) = 7)
+        )
     </select>
 
     <select id="selectByMotherBirth"  resultType="com.system.po.StuCustom">
@@ -149,14 +180,19 @@
         WHERE
         stu.gradeID = grade.gradeID
         AND  <!--不跨年的查询-->
-        DATEDIFF(CAST(CONCAT(YEAR(NOW()),DATE_FORMAT(stu.motherBirth,'-%m-%d'))AS DATE),CAST(DATE_FORMAT(NOW(),'%y-%m-%d') AS DATE)) = 7
-        OR   <!--or后面的解决跨年问题-->
-        DATEDIFF(CAST(CONCAT(YEAR(NOW())+1,DATE_FORMAT(stu.motherBirth,'-%m-%d'))AS DATE),CAST(DATE_FORMAT(NOW(),'%y-%m-%d') AS DATE)) = 7
-        OR <!--补充闰年2月29日的生日方法-->
         (
-        f_not_leap_year(YEAR(NOW()))
-        AND DATE_FORMAT(stu.motherBirth,'-%m-%d')= '-02-29'
-        AND DATEDIFF(CAST(CONCAT('2000',DATE_FORMAT(stu.motherBirth,'-%m-%d'))AS DATE),CAST(CONCAT('2000',DATE_FORMAT(NOW(),'-%m-%d')) AS DATE)) = 7)
+            DATEDIFF(CAST(CONCAT(YEAR(NOW()),DATE_FORMAT(stu.motherBirth,'-%m-%d'))AS
+            DATE),CAST(DATE_FORMAT(NOW(),'%y-%m-%d') AS DATE)) = 7
+            OR   <!--or后面的解决跨年问题-->
+            DATEDIFF(CAST(CONCAT(YEAR(NOW())+1,DATE_FORMAT(stu.motherBirth,'-%m-%d'))AS
+            DATE),CAST(DATE_FORMAT(NOW(),'%y-%m-%d') AS DATE)) = 7
+            OR <!--补充闰年2月29日的生日方法-->
+            (
+            f_not_leap_year(YEAR(NOW()))
+            AND DATE_FORMAT(stu.motherBirth,'-%m-%d')= '-02-29'
+            AND DATEDIFF(CAST(CONCAT('2000',DATE_FORMAT(stu.motherBirth,'-%m-%d'))AS
+            DATE),CAST(CONCAT('2000',DATE_FORMAT(NOW(),'-%m-%d')) AS DATE)) = 7)
+        )
     </select>
 
     <select id="selectByPay"  parameterType="com.system.po.PagingVO" resultType="com.system.po.StuCustom">

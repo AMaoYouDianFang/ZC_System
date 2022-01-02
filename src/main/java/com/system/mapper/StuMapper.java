@@ -87,6 +87,7 @@ public interface StuMapper {
     int countStu() throws Exception;
 
     int countStuByGrade(Integer gradeid) throws Exception;
+    int countStuByCampus(Integer campusid) throws Exception;
 
     int countStuByDate(Date startdate, Date enddate) throws Exception;
 

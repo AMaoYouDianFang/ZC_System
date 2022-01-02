@@ -1,9 +1,9 @@
 package com.system.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.system.exception.CustomException;
 import com.system.po.*;
 import com.system.service.*;
-
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -33,6 +33,7 @@ import java.util.*;
 
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.JsonViewRequestBodyAdvice;
 
 
 /**
@@ -349,6 +350,7 @@ public class AdminController {
         List<Grade> list = gradeService.findAllGrade();
         List<Major> majorList = majorService.findAllMajor();
         List<School> schoolList = schoolService.findAllSchool();
+        List<Campus> campusList = campusService.findAllCampus();
 
         SimpleDateFormat datetype = new SimpleDateFormat("yyyy-MM-dd");
         if (stu.getStubirth() != null) {
@@ -368,6 +370,7 @@ public class AdminController {
         }
         model.addAttribute("majorList", majorList);
         model.addAttribute("schoolList", schoolList);
+        model.addAttribute("campusList", campusList);
         model.addAttribute("stumessage", stu);
         model.addAttribute("stuBirth", stuBirth);
         model.addAttribute("motherBirth", motherBirth);
@@ -1092,6 +1095,20 @@ public class AdminController {
         return "redirect:/admin/searchGrade?gradeid=" + gradeid + "&page=" + currentPage;
     }
 
+    @RequestMapping(value = "/removeStuCampus", method = {RequestMethod.GET})
+    private String removeStuCampus(Integer stuid, String currentPage, Integer campusid) throws Exception {
+
+        //删除表1
+        stuService.removeStuByID(stuid);
+        //删除表2
+        lessonService.removeLessonByID(stuid);
+        //删除表3
+        examService.removeExamByID(stuid);
+        //删除标记sign
+        signService.removeSignByID(stuid);
+        return "redirect:/admin/searchCampus?campusid=" + campusid + "&page=" + currentPage;
+    }
+
     @RequestMapping(value = "/removeStuDate", method = {RequestMethod.GET})
     private String removeStuDate(Integer stuid, String currentPage, Date startdate, Date enddate) throws Exception {
 
@@ -1333,6 +1350,47 @@ public class AdminController {
         return "redirect:/admin/searchGrade?gradeid=" + gradeid;
     }
 
+    // 搜索校区操作
+    @RequestMapping(value = "/searchCampus", method = {RequestMethod.GET})
+    public String searchCampusUI(Integer campusid, Model model, Integer page) throws Exception {
+        List<Campus> campusList = campusService.findAllCampus();
+        model.addAttribute("campusLists", campusList);
+        Integer campusIndex;
+        //System.out.println(campusid);
+        //List<StuCustom> stuCustomList = stuService.findStuByGrade(gradeid);
+        if (campusid != null) {
+            campusIndex = campusid;
+            List<StuCustom> list = null;
+            PagingVO pagingVO = new PagingVO();
+
+            pagingVO.setTotalCount(stuService.getCountByCampus(campusid));
+            if (page == null || page == 0) {
+                pagingVO.setCurentPageNo(1);
+                pagingVO.setToPageNo(1);
+                list = stuService.findStuByCampus(1, campusid);
+            } else {
+                pagingVO.setToPageNo(page);
+                list = stuService.findStuByCampus(page, campusid);
+                //System.out.println(list.size());
+            }
+
+            List<StuCustom> allStuList = stuService.findAllStuByCampus(campusid);
+            model.addAttribute("allStuList", allStuList);
+            model.addAttribute("campusIndex", campusIndex);
+            model.addAttribute("stuList", list);
+            model.addAttribute("pagingVO", pagingVO);
+
+        }
+        return "admin/searchCampus";
+    }
+
+    // 搜索年级操作
+    @RequestMapping(value = "/searchCampus", method = {RequestMethod.POST})
+    public String searchCampusPost(Integer campusid, Model model) throws Exception {
+
+        return "redirect:/admin/searchCampus?campusid=" + campusid;
+    }
+
     // 搜索时间操作
     @RequestMapping(value = "/searchDate", method = {RequestMethod.GET})
     public String searchDateUI(String datestart, String dateend, Model model, Integer page) throws Exception {
@@ -1503,7 +1561,7 @@ public class AdminController {
         PagingVO pagingVO = new PagingVO();
         //设置总页数
         pagingVO.setTotalCount(stuService.getCountBySameStu());
-        System.out.println(stuService.getCountBySameStu());
+        //System.out.println(stuService.getCountBySameStu());
         if (page == null || page == 0) {
             pagingVO.setCurentPageNo(1);
             pagingVO.setToPageNo(1);
@@ -2046,6 +2104,14 @@ public class AdminController {
             model.addAttribute("message", "该记事本不存在");
             return "error";
         }
+//        String str = "{\"result\":\"success\",\"message\":\"成功！\",\"data\":[{\"name\":\"Tom\",\"age\":\"20\"}]}";
+//
+//        JSONObject json;
+//        json = JSONObject.parseObject(str);
+//        System.out.println(json);
+//        String  ss = json.getString("result");
+//        System.out.println(ss);
+
         //没有权限访问
         Subject subject = SecurityUtils.getSubject();
         String username = (String) subject.getPrincipal();
@@ -2061,12 +2127,26 @@ public class AdminController {
     }
 
 
+
     // 记事本操作
     @RequestMapping(value = "/editNoteText", method = {RequestMethod.POST})
-    public String editNoteText(TextDic textDic, String currentPage) throws Exception {
-        userloginService.updeTextDicByID(textDic);
+    @ResponseBody
+    public String editNoteText(@RequestBody String data1) throws Exception {
+
+        data1 = data1.replace("\\\"", "\"");
+        data1 = data1.substring(1,data1.length()-1);
+        JSONObject json;
+        json = JSONObject.parseObject(data1.replace("\\\"", "\""));
+
+        Integer  textid = Integer.parseInt(json.getString("textid"));
+        String  currentPage = json.getString("currentPage");
+        String  editor = json.getString("editor");
+        //System.out.println(ss);
+
+
+        //userloginService.updeTextDicByID(textDic);
         //  System.out.print(currentPage);
-        return "redirect:/admin/showTextDic?page=" + currentPage;
+        return "redirect:/admin/showTextDic?page=" + "1";
     }
 
 

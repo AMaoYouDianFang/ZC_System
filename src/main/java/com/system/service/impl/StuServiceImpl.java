@@ -305,6 +305,11 @@ public class StuServiceImpl implements StuService {
         return stuMapper.countStuByGrade(gradeid);
     }
 
+    public int getCountByCampus(Integer campusid) throws Exception {
+
+        return stuMapper.countStuByCampus(campusid);
+    }
+
     public int getCountByBirth() throws Exception {
 
         return stuMapper.countStuByBirth();
@@ -405,10 +410,24 @@ public class StuServiceImpl implements StuService {
         return stuMapperCustom.selectByGrade(pagingVO);
     }
 
+    public List<StuCustom> findStuByCampus(Integer toPageNo, Integer campusid) throws Exception{
+
+        PagingVO pagingVO = new PagingVO();
+        pagingVO.setToPageNo(toPageNo);
+        pagingVO.setIntergertemp(campusid);
+        return stuMapperCustom.selectByCampus(pagingVO);
+    }
+
     public List<StuCustom> findAllStuByGrade(Integer gradeid) throws Exception{
 
 
         return stuMapperCustom.selectAllByGrade(gradeid);
+    }
+
+    public List<StuCustom> findAllStuByCampus(Integer campusid) throws Exception{
+
+
+        return stuMapperCustom.selectAllByCampus(campusid);
     }
 
 
