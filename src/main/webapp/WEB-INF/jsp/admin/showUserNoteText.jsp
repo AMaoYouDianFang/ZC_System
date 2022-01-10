@@ -19,6 +19,7 @@
     <!-- 引入JQuery  bootstrap.js-->
     <script src="/js/jquery-3.2.1.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/wangEditor.min.js"></script>
 </head>
 <body>
 <!-- 顶栏 -->
@@ -36,8 +37,11 @@
                 </div>
                 <div class="panel-body">
                         <div class="form-group">
-                            <textarea style="width: 100%; resize: none; border: none; font-size:18px;" rows="25"
-                                      name="content">${textDic}</textarea>
+                            <div id="div1">
+                                ${textDic}
+                            </div>
+<%--                            <textarea style="width: 100%; resize: none; border: none; font-size:18px;" rows="25"--%>
+<%--                                      name="content">${textDic}</textarea>--%>
                         </div>
                 </div>
 
@@ -54,5 +58,27 @@
 </body>
 <script type="text/javascript">
     $("#nav6").addClass("active");
+    var E = window.wangEditor
+    var editor = new E('#div1')
+    editor.customConfig.menus = [
+        'head',  // 标题
+        'bold',  // 粗体
+        'fontSize',  // 字号
+        'fontName',  // 字体
+        'italic',  // 斜体
+        'underline',  // 下划线
+        'strikeThrough',  // 删除线
+        'foreColor',  // 文字颜色
+        'backColor',  // 背景颜色
+        'link',  // 插入链接
+        'list',  // 列表
+        'justify',  // 对齐方式
+        'table',  // 表格
+        'undo',  // 撤销
+        'redo'  // 重复
+    ]
+    editor.create()
+    editor.$textContainerElem.css('height', '600px !important'); //设置高度
+
 </script>
 </html>

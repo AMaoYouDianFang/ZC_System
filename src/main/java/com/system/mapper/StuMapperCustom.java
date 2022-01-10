@@ -33,8 +33,11 @@ public interface StuMapperCustom {
 
     List<StuCustom> selectByGrade(PagingVO pagingVO) throws Exception;
 
+    List<StuCustom> selectByCampus(PagingVO pagingVO) throws Exception;
+
     //根据年级搜索全部的学生
     List<StuCustom> selectAllByGrade(Integer gradeid) throws Exception;
+    List<StuCustom> selectAllByCampus(Integer campusid) throws Exception;
 
     StuCustom selectByPrimaryKey(Integer stuid);
 

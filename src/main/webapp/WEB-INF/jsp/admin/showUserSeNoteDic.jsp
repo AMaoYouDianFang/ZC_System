@@ -119,11 +119,10 @@
                     <c:forEach items="${noteDicList}" var="item" varStatus="status">
                         <tr>
                             <th>${(pagingVO1.curentPageNo-1)*(pagingVO1.pageSize)+status.index + 1}</th>
-                            <th>${item.dicname}</th>
+                            <th>${item.title}</th>
                             <th>
                                 <button type="button" class="btn btn-primary btn-xs"
-                                        onClick="window.open('/admin/showUserNoteTable?dicid=${item.dicid}')">查看表格
-
+                                        onClick="window.open('/admin/showUserNoteText?textid=${item.textid}')">查看文本
                                 </button>
 
                             </th>

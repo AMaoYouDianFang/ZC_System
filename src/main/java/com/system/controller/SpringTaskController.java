@@ -115,6 +115,7 @@ public class SpringTaskController {
             for (int j = 0; j < lessons.size(); j++) {
                 lessonid =lessons.get(j).getLessonid();
                 remindPay.setLessonid(lessonid);
+                remindPay.setTeachername("None");
                 remindService.saveRemindPay(remindPay);
             }
         }

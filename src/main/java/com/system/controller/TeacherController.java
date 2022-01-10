@@ -1,5 +1,6 @@
 package com.system.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.system.po.*;
 import com.system.service.*;
@@ -7,10 +8,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.annotation.Resource;
@@ -880,7 +878,7 @@ public class TeacherController {
         String username = (String) subjectuse.getPrincipal();
 
 
-        List<LessonCustom> allStuList = null;
+        List<LessRemind> allStuList = null;
         //页码对象
         PagingVO pagingVO = new PagingVO();
         //设置总页数
@@ -896,6 +894,17 @@ public class TeacherController {
         model.addAttribute("allStuList", allStuList);
         model.addAttribute("pagingVO", pagingVO);
         return "teacher/remindPay";
+    }
+
+    @RequestMapping(value = "/updateRemindPay", method = {RequestMethod.GET})
+    private String updateRemindPay(Integer id, Integer currentPage) throws Exception {
+        //System.out.println(id);
+        Subject subject = SecurityUtils.getSubject();
+        String username = (String) subject.getPrincipal();
+
+        remindService.updateRemindPay(id, username);
+
+        return "redirect:/teacher/remindPay?page=" + currentPage;
     }
 
     /*<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<提醒功能结束>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
@@ -962,10 +971,10 @@ public class TeacherController {
     public String editNoteTextUI(Integer textid, String currentPage, Model model) throws Exception {
 
         TextDic textDic = userloginService.findTextDicByID(textid);
-        if(textDic==null){
-            model.addAttribute("message", "该记事本不存在");
-            return "error";
-        }
+//        if(textDic==null){
+//            model.addAttribute("message", "该记事本不存在");
+//            return "error";
+//        }
         //没有权限访问
         Subject subject = SecurityUtils.getSubject();
         String username = (String) subject.getPrincipal();
@@ -983,19 +992,30 @@ public class TeacherController {
 
     // 记事本操作
     @RequestMapping(value = "/editNoteText", method = {RequestMethod.POST})
-    public String editNoteText(TextDic textDic, String currentPage ) throws Exception {
+    @ResponseBody
+    public String editNoteText(@RequestBody String data1) throws Exception {
+
+        data1 = data1.replace("\\\"", "\"");
+        data1 = data1.substring(1,data1.length()-1);
+        JSONObject json;
+        json = JSONObject.parseObject(data1.replace("\\\"", "\""));
+        Integer  textid = Integer.valueOf(json.getString("textid"));
+        String  editor = json.getString("editor");
+        TextDic textDic = new TextDic();
+        textDic.setTextid(textid);
+        textDic.setContent(editor);
         userloginService.updeTextDicByID(textDic);
-        return "redirect:/teacher/showTextDic?page=" + currentPage;
+        return "success";
     }
 
     @RequestMapping(value = "/editSeNoteText", method = {RequestMethod.GET})
     public String editSeNoteTextUI(Integer textid, String currentPage, Model model) throws Exception {
 
         TextDic textDic = userloginService.findTextDicByID(textid);
-        if(textDic==null){
-            model.addAttribute("message", "该记事本不存在");
-            return "error";
-        }
+//        if(textDic==null){
+//            model.addAttribute("message", "该记事本不存在");
+//            return "error";
+//        }
         //没有权限访问
         Subject subject = SecurityUtils.getSubject();
         String username = (String) subject.getPrincipal();
@@ -1013,10 +1033,19 @@ public class TeacherController {
 
     // 记事本操作
     @RequestMapping(value = "/editSeNoteText", method = {RequestMethod.POST})
-    public String editSeNoteText(TextDic textDic, String currentPage ) throws Exception {
+    @ResponseBody
+    public String editSeNoteText(@RequestBody String data1) throws Exception {
+        data1 = data1.replace("\\\"", "\"");
+        data1 = data1.substring(1,data1.length()-1);
+        JSONObject json;
+        json = JSONObject.parseObject(data1.replace("\\\"", "\""));
+        Integer  textid = Integer.valueOf(json.getString("textid"));
+        String  editor = json.getString("editor");
+        TextDic textDic = new TextDic();
+        textDic.setTextid(textid);
+        textDic.setContent(editor);
         userloginService.updeTextDicByID(textDic);
-        System.out.print(currentPage);
-        return "redirect:/teacher/showSeTextDic?page=" + currentPage;
+        return "success";
     }
 
     //删除文本
@@ -1035,17 +1064,18 @@ public class TeacherController {
 
         Subject subject = SecurityUtils.getSubject();
         String username = (String) subject.getPrincipal();
-        List<NoteDic> list = null;
+        List<TextDic> list = null;
         PagingVO pagingVO = new PagingVO();
-        //pagingVO.setStringtemp(username);
-        pagingVO.setTotalCount(userloginService.getCountNoteDic(username,0));
+
+        pagingVO.setTotalCount(userloginService.getCountText(username, 2));
+
         if (page == null || page == 0) {
             pagingVO.setCurentPageNo(1);
             pagingVO.setToPageNo(1);
-            list = userloginService.findNoteDic(1, username,0);
+            list = userloginService.findTextByName(1, username, 2);
         } else {
             pagingVO.setToPageNo(page);
-            list = userloginService.findNoteDic(page,username,0);
+            list = userloginService.findTextByName(page, username, 2);
         }
         model.addAttribute("noteDicList", list);
         model.addAttribute("pagingVO", pagingVO);
@@ -1058,17 +1088,13 @@ public class TeacherController {
     public String showNoteDic(String dicName, String currentPage, Model model) throws Exception {
         Subject subject = SecurityUtils.getSubject();
         String username = (String) subject.getPrincipal();
-        //  NoteDic dicname = userloginService.findNoteDic(username,dicName);
-//        if (dicname!=null) {
-//            model.addAttribute("message", "表名重复,请重新输入");
-//            return "error";
-//        }
 
-        NoteDic noteDic=new NoteDic();
-        noteDic.setDicname(dicName);
-        noteDic.setUsername(username);
-        noteDic.setDictype(0);
-        userloginService.saveNoteDic(noteDic);
+
+        TextDic textDic = new TextDic();
+        textDic.setTitle(dicName);
+        textDic.setUsername(username);
+        textDic.setTexttype(2); // 2表示班级管理记事本表格
+        userloginService.saveText(textDic);
 
         return "redirect:/teacher/showNoteDic?page=" + currentPage;
     }
@@ -1076,13 +1102,8 @@ public class TeacherController {
     //删除记事本目录
     // 删除学生
     @RequestMapping(value = "/removeNoteDic", method = {RequestMethod.GET})
-    private String removeNoteDic(Integer dicid, String currentPage) throws Exception {
-      /*  if (id == null) {
-            //加入没有带学生id就进来的话就返回学生显示页面
-            return "teacher/showStudent";
-        }*/
-        userloginService.removeNoteDic(dicid);  //删除记事本目录
-         userloginService.removeNoteByDicID(dicid);  //删除某个目录对应的内容
+    private String removeNoteDic(Integer textid, String currentPage) throws Exception {
+        userloginService.removeTextByID(textid);  //删除记事本目录
         return "redirect:/teacher/showNoteDic?page=" + currentPage;
     }
 
@@ -1145,46 +1166,38 @@ public class TeacherController {
 
     // 记事表操作
     @RequestMapping(value = "/editNoteTable", method = {RequestMethod.GET})
-    public String editNoteTableUI(Model model, Integer page, Integer dicid) throws Exception {
-
-        NoteDic noteDic = userloginService.findNoteDicByID(dicid);
+    public String editNoteTableUI(Model model, String currentPage, Integer textid) throws Exception {
+        TextDic textDic = userloginService.findTextDicByID(textid);
         Subject subject = SecurityUtils.getSubject();
         String username = (String) subject.getPrincipal();
-        if (!noteDic.getUsername().equals(username) ) {
+        if (!textDic.getUsername().equals(username)) {
             model.addAttribute("message", "没有权限访问");
             return "error";
         }
-        List<NoteTable> list = null;
-        PagingVO pagingVO = new PagingVO();
-
-        pagingVO.setTotalCount(userloginService.getCountNoteTable(dicid));
-        if (page == null || page == 0) {
-            pagingVO.setCurentPageNo(1);
-            pagingVO.setToPageNo(1);
-            list = userloginService.findNoteTableByDicID(1,dicid);
-        } else {
-            pagingVO.setToPageNo(page);
-            list = userloginService.findNoteTableByDicID(page,dicid);
-        }
-
-       // List<NoteTable> noteTableList = userloginService.findAllNoteTableByDicID(dicid);
-        model.addAttribute("dicid", dicid);
-        model.addAttribute("noteTableList", list);
-     //   model.addAttribute("allNoteTableList", noteTableList);
-        model.addAttribute("pagingVO", pagingVO);
-
+        //System.out.println(currentPage);
+        model.addAttribute("textDic", textDic.getContent());
+        model.addAttribute("textid", textid);
+        model.addAttribute("texttitle", textDic.getTitle());
+        model.addAttribute("currentPage", currentPage);
         return "teacher/editNoteTable";
     }
 
     // 记事表操作
     @RequestMapping(value = "/editNoteTable", method = {RequestMethod.POST})
-    public String editNoteTable(String notetext) throws Exception {
+    @ResponseBody
+    public String editNoteTable(@RequestBody String data1) throws Exception {
 
-        // Subject subject = SecurityUtils.getSubject();
-        //String username = (String) subject.getPrincipal();
-        // userloginService.updateNote(username, notetext);
-
-        return "redirect:/teacher/editNoteTable";
+        data1 = data1.replace("\\\"", "\"");
+        data1 = data1.substring(1,data1.length()-1);
+        JSONObject json;
+        json = JSONObject.parseObject(data1.replace("\\\"", "\""));
+        Integer  textid = Integer.valueOf(json.getString("textid"));
+        String  editor = json.getString("editor");
+        TextDic textDic = new TextDic();
+        textDic.setTextid(textid);
+        textDic.setContent(editor);
+        userloginService.updeTextDicByID(textDic);
+        return "success";
     }
 
     ///////////////////////招生信息管理操作////////////////////////////////////
@@ -1240,18 +1253,21 @@ public class TeacherController {
 
         Subject subject = SecurityUtils.getSubject();
         String username = (String) subject.getPrincipal();
-        List<NoteDic> list = null;
+
+        List<TextDic> list = null;
         PagingVO pagingVO = new PagingVO();
-        //pagingVO.setStringtemp(username);
-        pagingVO.setTotalCount(userloginService.getCountNoteDic(username,1));
+
+        pagingVO.setTotalCount(userloginService.getCountText(username, 3));
+
         if (page == null || page == 0) {
             pagingVO.setCurentPageNo(1);
             pagingVO.setToPageNo(1);
-            list = userloginService.findNoteDic(1, username,1);
+            list = userloginService.findTextByName(1, username, 3);
         } else {
             pagingVO.setToPageNo(page);
-            list = userloginService.findNoteDic(page,username,1);
+            list = userloginService.findTextByName(page, username, 3);
         }
+
         model.addAttribute("noteDicList", list);
         model.addAttribute("pagingVO", pagingVO);
 
@@ -1264,17 +1280,12 @@ public class TeacherController {
     public String showSeNoteDic(String dicName, String currentPage, Model model) throws Exception {
         Subject subject = SecurityUtils.getSubject();
         String username = (String) subject.getPrincipal();
-        //  NoteDic dicname = userloginService.findNoteDic(username,dicName);
-//        if (dicname!=null) {
-//            model.addAttribute("message", "表名重复,请重新输入");
-//            return "error";
-//        }
 
-        NoteDic noteDic=new NoteDic();
-        noteDic.setDicname(dicName);
-        noteDic.setUsername(username);
-        noteDic.setDictype(1);
-        userloginService.saveNoteDic(noteDic);
+        TextDic textDic = new TextDic();
+        textDic.setTitle(dicName);
+        textDic.setUsername(username);
+        textDic.setTexttype(3); //
+        userloginService.saveText(textDic);
 
         return "redirect:/teacher/showSeNoteDic?page=" + currentPage;
     }
@@ -1282,59 +1293,46 @@ public class TeacherController {
     //删除记事本目录
     // 删除学生
     @RequestMapping(value = "/removeSeNoteDic", method = {RequestMethod.GET})
-    private String removeSeNoteDic(Integer dicid, String currentPage) throws Exception {
-      /*  if (id == null) {
-            //加入没有带学生id就进来的话就返回学生显示页面
-            return "master/showStudent";
-        }*/
-        userloginService.removeNoteDic(dicid);  //删除记事本目录
-         userloginService.removeNoteByDicID(dicid);  //删除某个目录对应的内容
+    private String removeSeNoteDic(Integer textid, String currentPage) throws Exception {
+        userloginService.removeTextByID(textid);  //删除记事本目录
         return "redirect:/teacher/showSeNoteDic?page=" + currentPage;
     }
 
     // 记事表操作
     @RequestMapping(value = "/editSeNoteTable", method = {RequestMethod.GET})
-    public String editSeNoteTableUI(Model model, Integer page, Integer dicid) throws Exception {
-        NoteDic noteDic = userloginService.findNoteDicByID(dicid);
+    public String editSeNoteTableUI(Model model, String currentPage, Integer textid) throws Exception {
+        TextDic textDic = userloginService.findTextDicByID(textid);
         Subject subject = SecurityUtils.getSubject();
         String username = (String) subject.getPrincipal();
-        if (!noteDic.getUsername().equals(username) ) {
+        if (!textDic.getUsername().equals(username)) {
             model.addAttribute("message", "没有权限访问");
             return "error";
         }
-
-        List<NoteTable> list = null;
-        PagingVO pagingVO = new PagingVO();
-
-        pagingVO.setTotalCount(userloginService.getCountNoteTable(dicid));
-        if (page == null || page == 0) {
-            pagingVO.setCurentPageNo(1);
-            pagingVO.setToPageNo(1);
-            list = userloginService.findNoteTableByDicID(1,dicid);
-        } else {
-            pagingVO.setToPageNo(page);
-            list = userloginService.findNoteTableByDicID(page,dicid);
-        }
-
-        //  List<NoteTable> noteTableList = userloginService.findAllNoteTableByDicID(dicid);
-        model.addAttribute("dicid", dicid);
-        model.addAttribute("noteTableList", list);
-        //  model.addAttribute("allNoteTableList", noteTableList);
-        model.addAttribute("pagingVO", pagingVO);
-
+        model.addAttribute("textDic", textDic.getContent());
+        model.addAttribute("textid", textid);
+        model.addAttribute("texttitle", textDic.getTitle());
+        model.addAttribute("currentPage", currentPage);
         return "teacher/editSeNoteTable";
     }
 
     // 记事表操作
     @RequestMapping(value = "/editSeNoteTable", method = {RequestMethod.POST})
-    public String editSeNoteTable(String notetext) throws Exception {
+    @ResponseBody
+    public String editSeNoteTable(@RequestBody String data1) throws Exception {
 
-        // Subject subject = SecurityUtils.getSubject();
-        //String username = (String) subject.getPrincipal();
-        // userloginService.updateNote(username, notetext);
-
-        return "redirect:/teacher/editSeNoteTable";
+        data1 = data1.replace("\\\"", "\"");
+        data1 = data1.substring(1,data1.length()-1);
+        JSONObject json;
+        json = JSONObject.parseObject(data1.replace("\\\"", "\""));
+        Integer  textid = Integer.valueOf(json.getString("textid"));
+        String  editor = json.getString("editor");
+        TextDic textDic = new TextDic();
+        textDic.setTextid(textid);
+        textDic.setContent(editor);
+        userloginService.updeTextDicByID(textDic);
+        return "success";
     }
+
 
     // 添加记事表操作
     @RequestMapping(value = "/addSeNoteTable", method = {RequestMethod.GET})
@@ -1416,6 +1414,14 @@ public class TeacherController {
         List<Grade> gradelist = gradeService.findAllGradeByAuth(username);
 
         int campusAuthorize = 0;
+        if (campusid == null) {
+            if (campusList.size() == 0) {
+                model.addAttribute("message", "您没有权限查看, 请返回");
+                return "error";
+            } else {
+                campusid = campusList.get(0).getCampusid();
+            }
+        }
         for(int i=0; i<campusList.size(); i++)    {
             Integer campusAuthorizeID =  campusList.get(i).getCampusid();
             if(campusAuthorizeID.equals(campusid)){
@@ -1503,6 +1509,14 @@ public class TeacherController {
         List<Grade> gradelist = gradeService.findAllGradeByAuth(username);
 
         int campusAuthorize = 0;
+        if (campusid == null) {
+            if (campusList.size() == 0) {
+                model.addAttribute("message", "您没有权限查看, 请返回");
+                return "error";
+            } else {
+                campusid = campusList.get(0).getCampusid();
+            }
+        }
         for(int i=0; i<campusList.size(); i++)    {
             Integer campusAuthorizeID =  campusList.get(i).getCampusid();
             if(campusAuthorizeID.equals(campusid)){
@@ -1624,6 +1638,14 @@ public class TeacherController {
 
 
         int campusAuthorize = 0;
+        if (campusid == null) {
+            if (campusList.size() == 0) {
+                model.addAttribute("message", "您没有权限查看, 请返回");
+                return "error";
+            } else {
+                campusid = campusList.get(0).getCampusid();
+            }
+        }
         for(int i=0; i<campusList.size(); i++)    {
             Integer campusAuthorizeID =  campusList.get(i).getCampusid();
             if(campusAuthorizeID.equals(campusid)){

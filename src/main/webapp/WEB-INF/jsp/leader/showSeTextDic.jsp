@@ -30,7 +30,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="row">
-                        <h1 class="col-md-5">文本目录</h1>
+                        <h1 class="col-md-5">招生信息管理文本目录</h1>
 
                         <button type="button" class="btn btn-success col-md-2 " data-toggle="modal"
                                 id="editbutton" onclick="SetPage()" style="margin-top: 20px; float:right"
@@ -87,7 +87,7 @@
                             <th>${item.title}</th>
                             <th>
                                 <button type="button" class="btn btn-primary btn-xs"
-                                    <%--onClick="window.open('/admin/editNoteText?textid=${item.textid}')">查看文本--%>
+                                    <%--onClick="window.open('/leader/editNoteText?textid=${item.textid}')">查看文本--%>
                                         onclick="location.href='/leader/editSeNoteText?textid=${item.textid}&currentPage=${pagingVO.curentPageNo}'">查看文本
 
                                 </button>
@@ -197,6 +197,7 @@
             window.location.href="/leader/showSeTextDic?page="+ page;
         }
     }
+
 
     function remove(textid,page) {
         var msg = "您确定要删除吗";

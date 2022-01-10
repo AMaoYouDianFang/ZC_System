@@ -1,18 +1,16 @@
 package com.system.mapper;
 
-import com.system.po.LessonCustom;
-import com.system.po.PagingVO;
-import com.system.po.RemindPay;
-import com.system.po.StuCustom;
+import com.system.po.*;
 
 import java.util.List;
 
 public interface RemindPayMapper {
     int insert (RemindPay remindPay);
     int deleteByID(Integer id);
+    void updateByID(Integer id, String username);
 
-    List<LessonCustom> selectAllByPay(PagingVO pagingVO);  //分页
-    List<LessonCustom> selectAllByPayAuth(PagingVO pagingVO);  //分页
+    List<LessRemind> selectAllByPay(PagingVO pagingVO);  //分页
+    List<LessRemind> selectAllByPayAuth(PagingVO pagingVO);  //分页
 
     List<StuCustom> selectAllRemindPay();  //全部
     int countRemindPay();

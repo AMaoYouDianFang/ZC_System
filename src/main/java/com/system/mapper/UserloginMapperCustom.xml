@@ -27,8 +27,7 @@
           userlogin.*,
           role.*,
         FROM
-          userlogin,
-          role
+          userlogin, role
         WHERE
           userlogin.role = role.roleID
     </select>
@@ -38,8 +37,7 @@
 
     <select id="findByPaging" parameterType="PagingVO" resultType="UserloginCustom">
         select userlogin.*, role.roleName
-        from userlogin,
-          role
+        from userlogin, role
         WHERE userlogin.role = role.roleID
         limit #{toPageNo}, #{pageSize}
     </select>

@@ -102,24 +102,42 @@
             <form role="form" action="/admin/editMessage" id="editstu" method="post">
 
                 <div class="col-sm-10" style="font-size: 15px; padding: 10pt">
+                    <div style="width: 220px; display: inline-block; font-size: 15px " >
+                        <select class="selectpicker show-tick form-control" data-live-search="true" name="campusid" >
+                            <c:forEach items="${campusList}" var="item">
+                                <c:choose>
+                                    <c:when test="${item.campusid==stumessage.campusid}">
+                                        <option value="${item.campusid}"
+                                                selected="selected">${item.campusname}</option>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="${item.campusid}">${item.campusname}</option>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+                        </select>
+                    </div>
 
-                    <label class="checkbox-inline">
-                        <C:if test="${stumessage.stutype=='普通学生'}">
-                            <input type="radio" name="stutype" value="普通学生" checked>普通学生
-                        </C:if>
-                        <C:if test="${stumessage.stutype!='普通学生'}">
-                            <input type="radio" name="stutype" value="普通学生">普通学生
-                        </C:if>
-                    </label>
-                    <label class="checkbox-inline">
-                        <C:if test="${stumessage.stutype=='优质学生'}">
-                            <input type="radio" name="stutype" value="优质学生" checked>优质学生
-                        </C:if>
-                        <C:if test="${stumessage.stutype!='优质学生'}">
-                            <input type="radio" name="stutype" value="优质学生" >优质学生
-                        </C:if>
+                    <div style="display: inline-block;">
+                        <label class="checkbox-inline">
+                            <C:if test="${stumessage.stutype=='普通学生'}">
+                                <input type="radio" name="stutype" value="普通学生" checked>普通学生
+                            </C:if>
+                            <C:if test="${stumessage.stutype!='普通学生'}">
+                                <input type="radio" name="stutype" value="普通学生">普通学生
+                            </C:if>
+                        </label>
+                        <label class="checkbox-inline">
+                            <C:if test="${stumessage.stutype=='优质学生'}">
+                                <input type="radio" name="stutype" value="优质学生" checked>优质学生
+                            </C:if>
+                            <C:if test="${stumessage.stutype!='优质学生'}">
+                                <input type="radio" name="stutype" value="优质学生" >优质学生
+                            </C:if>
 
-                    </label>
+                        </label>
+                    </div>
+
                 </div>
 
 

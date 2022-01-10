@@ -1,9 +1,6 @@
 package com.system.service;
 
-import com.system.po.Birthday;
-import com.system.po.LessonCustom;
-import com.system.po.RemindPay;
-import com.system.po.StuCustom;
+import com.system.po.*;
 
 import java.util.List;
 
@@ -15,6 +12,7 @@ public interface RemindService {   //生日提醒和缴费提醒
     void removeBirthday(Integer id)throws Exception;
 
     void removeRemindPay(Integer id) throws  Exception;
+    void updateRemindPay(Integer id, String username) throws  Exception;
 
     List<Birthday> findAllBirthday( Integer toPageNo) throws Exception;
     List<Birthday> findAllBirthdayAuth( Integer toPageNo, String teacherName) throws Exception;
@@ -22,8 +20,8 @@ public interface RemindService {   //生日提醒和缴费提醒
     int getCountBirth() throws Exception;
     int getCountBirthAuth(String teacherName) throws Exception;
 
-    List<LessonCustom> findAllRemindPay(Integer toPageNo) throws  Exception;//分页
-    List<LessonCustom> findAllRemindPayAuth(Integer toPageNo, String teacherName) throws  Exception;//分页
+    List<LessRemind> findAllRemindPay(Integer toPageNo) throws  Exception;//分页
+    List<LessRemind> findAllRemindPayAuth(Integer toPageNo, String teacherName) throws  Exception;//分页
 
     List<StuCustom> findAllRemindList() throws  Exception; //全部
 

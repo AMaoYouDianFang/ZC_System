@@ -50,6 +50,8 @@
                             <li><a href="/admin/searchSchool">学校查询</a></li>
                             <li class="divider"></li>
                             <li><a href="/admin/searchSame">重名查询</a></li>
+                            <li class="divider"></li>
+                            <li><a href="/admin/searchCampus">校区查询</a></li>
                         </ul>
                     </li>
 

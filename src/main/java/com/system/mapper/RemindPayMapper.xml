@@ -3,9 +3,9 @@
 <mapper namespace="com.system.mapper.RemindPayMapper">
 
     <insert id="insert" parameterType="com.system.po.RemindPay" keyProperty="remindid" useGeneratedKeys="true">
-        insert into remindpay (lessonID
+        insert into remindpay (lessonID, teacherName
         )
-        values ( #{lessonid,jdbcType=INTEGER}
+        values ( #{lessonid,jdbcType=INTEGER}, #{teachername,jdbcType=VARCHAR}
         )
     </insert>
 
@@ -16,9 +16,9 @@
     </delete>
 
 
-    <select id="selectAllByPay" parameterType="com.system.po.PagingVO" resultType="com.system.po.LessonCustom">
+    <select id="selectAllByPay" parameterType="com.system.po.PagingVO" resultType="com.system.po.LessRemind">
           select
-          lesson.*, classtype.typeName, subject.subjectName, stu.stuName, stu.school, grade.gradeName
+          lesson.*, classtype.typeName, subject.subjectName, stu.stuName, stu.school, grade.gradeName, remindpay.teacherName
           from remindpay, lesson, classtype, subject, grade, stu
           where remindpay.lessonID = lesson.lessonID
           AND lesson.stuID = stu.stuID
@@ -64,9 +64,9 @@
         )
     </select>
 
-    <select id="selectAllByPayAuth" parameterType="com.system.po.PagingVO" resultType="com.system.po.LessonCustom">
+    <select id="selectAllByPayAuth" parameterType="com.system.po.PagingVO" resultType="com.system.po.LessRemind">
           select
-          lesson.*, classtype.typeName, subject.subjectName, stu.stuName, stu.school, grade.gradeName
+          lesson.*, classtype.typeName, subject.subjectName, stu.stuName, stu.school, grade.gradeName, remindpay.teacherName
           from remindpay, lesson, classtype, subject, grade, stu
           where remindpay.lessonID = lesson.lessonID
           AND lesson.stuID = stu.stuID
@@ -87,6 +87,13 @@
           )
           limit #{toPageNo}, #{pageSize}
     </select>
+
+    <update id="updateByID">
+        update remindpay
+        set
+        teacherName = #{1}
+        where remindID = #{0}
+    </update>
 
 
 </mapper>

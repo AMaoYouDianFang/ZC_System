@@ -77,12 +77,33 @@
         limit #{toPageNo}, #{pageSize}
     </select>
 
+    <select id="selectByCampus" parameterType="com.system.po.PagingVO" resultType="com.system.po.StuCustom">
+        select
+        stu.*, grade.gradeName
+        from stu, grade
+        WHERE
+        stu.campusID = #{intergertemp, jdbcType=INTEGER}
+        AND
+        stu.gradeID = grade.gradeID
+        limit #{toPageNo}, #{pageSize}
+    </select>
+
     <select id="selectAllByGrade" parameterType="java.lang.Integer" resultType="com.system.po.StuCustom">
         select
         stu.*, grade.gradeName
         from stu, grade
         WHERE
         stu.gradeID = #{gradeid, jdbcType=INTEGER}
+        AND
+        stu.gradeID = grade.gradeID
+    </select>
+
+    <select id="selectAllByCampus" parameterType="java.lang.Integer" resultType="com.system.po.StuCustom">
+        select
+        stu.*, grade.gradeName
+        from stu, grade
+        WHERE
+        stu.campusID = #{campusid, jdbcType=INTEGER}
         AND
         stu.gradeID = grade.gradeID
     </select>

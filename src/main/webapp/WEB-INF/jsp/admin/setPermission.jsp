@@ -41,10 +41,10 @@
                         <input type="hidden" id="username" name="username" value="${username}">
                         <h3 style="text-align: center;"> 校区权限 </h3>
                         <div>
-                            <c:forEach items="${campusList}" var="item">
+                            <c:forEach items="${campusList}" var="item" varStatus="status">
                                 <input type="checkbox" style="zoom:180%;" name="campus"
                                        value="${item.campusid+500}">${item.campusname}
-                                <C:if test="${(item.campusid) % 4 == 0}">
+                                <C:if test="${(status.index + 1) % 4 == 0}">
                                     <br>
                                 </C:if>
                             </c:forEach>
@@ -53,10 +53,10 @@
                         <h3 style="text-align: center;"> 状态权限 </h3>
 
                         <div>
-                            <c:forEach items="${gradeList}" var="item">
+                            <c:forEach items="${gradeList}" var="item" varStatus="status">
                                 <input type="checkbox" style="zoom:180%;" name="grade"
                                        value="${item.gradeid}">${item.gradename}
-                                <C:if test="${(item.gradeid+1) % 4 == 0}">
+                                <C:if test="${(status.index + 1) % 4 == 0}">
                                     <br>
                                 </C:if>
                             </c:forEach>

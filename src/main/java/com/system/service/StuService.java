@@ -101,6 +101,8 @@ public interface StuService {
 
     int getCountByGrade(Integer gradeid) throws Exception;
 
+    int getCountByCampus(Integer campusid) throws Exception;
+
     int getCountByDate(Date startdate, Date enddate) throws Exception;
 
     int getCountByBirth() throws Exception;
@@ -126,8 +128,10 @@ public interface StuService {
 
     //查询某个年级的所有学生
     List<StuCustom> findStuByGrade(Integer toPageNo, Integer gradeid) throws Exception;
+    List<StuCustom> findStuByCampus(Integer toPageNo, Integer campusid) throws Exception;
 
     List<StuCustom> findAllStuByGrade(Integer gradeid) throws Exception;
+    List<StuCustom> findAllStuByCampus(Integer campusid) throws Exception;
 
     //查找日期（分页）
     List<StuCustom> findStuByDate(Integer toPageNo, Date startdate, Date enddate) throws Exception;

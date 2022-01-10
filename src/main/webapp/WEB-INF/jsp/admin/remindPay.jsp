@@ -50,7 +50,9 @@
                         <th style="width: 8%">类型</th>
                         <th style="width: 10%">时间</th>
                         <th>内容</th>
+                        <th style="width: 10%">处理人</th>
                         <th style="width: 12%">操作</th>
+
                     </tr>
                     </thead>
                     <tbody>
@@ -64,7 +66,21 @@
                             <td>${item.typename}</td>
                             <td><fmt:formatDate value="${item.lessonend}" dateStyle="medium"/></td>
                             <td>${item.remark}</td>
+                            <td>
+                                <c:if test="${item.teachername == 'None'}">
+                                    <button type="button" class="btn btn-warning  btn-xs"
+                                            onclick="update('${item.lessonid}','${pagingVO.curentPageNo}')">OK
+                                    </button>&nbsp; &nbsp;
+                                </c:if>
 
+                                <c:if test="${item.teachername != 'None'}">
+                                    <button type="button" class="btn btn-warning  btn-xs" disabled="disabled"
+                                            onclick="update('${item.lessonid}','${pagingVO.curentPageNo}')">OK
+                                    </button>&nbsp; &nbsp;
+                                    ${item.teachername}
+                                </c:if>
+
+                            </td>
                             <td>
                                 <button type="button" class="btn btn-primary btn-xs"
                                         onClick="ToTableOne(${item.stuid})">查看信息
@@ -76,6 +92,8 @@
                                 </button>
 
                             </td>
+
+
                         </tr>
                     </c:forEach>
                     </tbody>
@@ -220,6 +238,16 @@
         var msg = "您确定要删除吗";
         if (confirm(msg) == true) {
             window.location.href="/admin/removeRemindPay?id=" + id + "&currentPage=" +page;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function update(id,page) {
+        var msg = "您确定点OK吗";
+        if (confirm(msg) == true) {
+            window.location.href="/admin/updateRemindPay?id=" + id + "&currentPage=" +page;
             return true;
         } else {
             return false;
