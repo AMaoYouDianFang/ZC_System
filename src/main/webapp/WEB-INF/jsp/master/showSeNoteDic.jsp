@@ -30,7 +30,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="row">
-                        <h1 class="col-md-5">记事表格目录</h1>
+                        <h1 class="col-md-5">招生信息管理记事表格目录</h1>
 
                         <button type="button" class="btn btn-success col-md-2 " data-toggle="modal"
                                 id="editbutton" onclick="SetPage()" style="margin-top: 20px; float:right"
@@ -84,10 +84,10 @@
                     <c:forEach items="${noteDicList}" var="item" varStatus="status">
                         <tr>
                             <th>${(pagingVO.curentPageNo-1)*(pagingVO.pageSize)+status.index + 1}</th>
-                            <th>${item.dicname}</th>
+                            <th>${item.title}</th>
                             <th>
                                 <button type="button" class="btn btn-primary btn-xs"
-                                        onClick="window.open('/master/editSeNoteTable?dicid=${item.dicid}')">查看表格
+                                        onClick="window.open('/master/editSeNoteTable?textid=${item.textid}')">查看表格
                                 </button>
 
                                     <%--<form role="form" action="/master/removeNoteDic" method="post">--%>
@@ -98,7 +98,7 @@
                                     <%--</form>--%>
 
                                 <button type="button" class="btn btn-danger  btn-xs"
-                                        onclick="remove('${item.dicid}','${pagingVO.curentPageNo}')">删除表格
+                                        onclick="remove('${item.textid}','${pagingVO.curentPageNo}')">删除表格
                                 </button>
 
 
@@ -172,14 +172,6 @@
 
     $("#nav20").addClass("active");
 
-    function confirmd() {
-        var msg = "您真的确定要删除吗？！";
-        if (confirm(msg) == true) {
-            return true;
-        } else {
-            return false;
-        }
-    };
 
     $("#addNoteDic").modal("hide");
     function SetPage() {
@@ -210,15 +202,16 @@
         }
     }
 
-    function remove(dicid,page) {
+    function remove(textid,page) {
         var msg = "您确定要删除吗";
         if (confirm(msg) == true) {
-            window.location.href="/master/removeSeNoteDic?dicid=" + dicid + "&currentPage=" +page;
+            window.location.href="/master/removeSeNoteDic?textid=" + textid + "&currentPage=" +page;
             return true;
         } else {
             return false;
         }
     }
+
 </script>
 </html>
 

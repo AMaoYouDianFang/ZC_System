@@ -30,7 +30,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="row">
-                        <h1 class="col-md-5">记事表格目录</h1>
+                        <h1 class="col-md-5">班级管理表格目录</h1>
 
                         <button type="button" class="btn btn-success col-md-2 " data-toggle="modal"
                                 id="editbutton" onclick="SetPage()" style="margin-top: 20px; float:right"
@@ -84,11 +84,15 @@
                     <c:forEach items="${noteDicList}" var="item" varStatus="status">
                         <tr>
                             <th>${(pagingVO.curentPageNo-1)*(pagingVO.pageSize)+status.index + 1}</th>
-                            <th>${item.dicname}</th>
+                            <th>${item.title}</th>
                             <th>
                                 <button type="button" class="btn btn-primary btn-xs"
-                                        onClick="window.open('/admin/editNoteTable?dicid=${item.dicid}')">查看表格
+                                        onclick="location.href='/admin/editNoteTable?textid=${item.textid}&currentPage=${pagingVO.curentPageNo}'">查看表格
                                 </button>
+
+<%--                                <button type="button" class="btn btn-primary btn-xs"--%>
+<%--                                        onClick="window.open('/admin/editNoteTable?dicid=${item.dicid}')">查看表格--%>
+<%--                                </button>--%>
 
                                 <%--<form role="form" action="/admin/removeNoteDic" method="post">--%>
                                     <%--<input type="hidden"  name="dicid" value="${item.dicid}">--%>
@@ -98,7 +102,7 @@
                                 <%--</form>--%>
 
                                 <button type="button" class="btn btn-danger  btn-xs"
-                                        onclick="remove('${item.dicid}','${pagingVO.curentPageNo}')">删除表格
+                                        onclick="remove('${item.textid}','${pagingVO.curentPageNo}')">删除表格
                                 </button>
 
 
@@ -212,10 +216,10 @@
         }
     }
 
-    function remove(dicid,page) {
+    function remove(textid,page) {
         var msg = "您确定要删除吗";
         if (confirm(msg) == true) {
-            window.location.href="/admin/removeNoteDic?dicid=" + dicid + "&currentPage=" +page;
+            window.location.href="/admin/removeNoteDic?textid=" + textid + "&currentPage=" +page;
             return true;
         } else {
             return false;

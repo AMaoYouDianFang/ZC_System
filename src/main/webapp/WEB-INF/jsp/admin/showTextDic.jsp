@@ -30,7 +30,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="row">
-                        <h1 class="col-md-5">文本目录</h1>
+                        <h1 class="col-md-5">班级管理文本目录</h1>
 
                         <button type="button" class="btn btn-success col-md-2 " data-toggle="modal"
                                 id="editbutton" onclick="SetPage()" style="margin-top: 20px; float:right"

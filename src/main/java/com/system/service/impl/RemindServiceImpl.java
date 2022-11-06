@@ -36,6 +36,10 @@ public class RemindServiceImpl implements RemindService {
         remindPayMapper.deleteByID(id);
     }
 
+    public  void updateRemindPay(Integer id, String username) throws  Exception{
+        remindPayMapper.updateByID(id, username);
+    }
+
     public List<Birthday> findAllBirthday(Integer toPageNo) throws Exception{
         PagingVO pagingVO = new PagingVO();
         pagingVO.setToPageNo(toPageNo);
@@ -57,13 +61,13 @@ public class RemindServiceImpl implements RemindService {
         return birthdayMapper.countBirthAuth(teacherName);
     }
 
-    public List<LessonCustom> findAllRemindPay(Integer toPageNo) throws  Exception{
+    public List<LessRemind> findAllRemindPay(Integer toPageNo) throws  Exception{
         PagingVO pagingVO = new PagingVO();
         pagingVO.setToPageNo(toPageNo);
         return remindPayMapper.selectAllByPay(pagingVO);
     }
 
-    public List<LessonCustom> findAllRemindPayAuth(Integer toPageNo, String teacherName) throws  Exception{
+    public List<LessRemind> findAllRemindPayAuth(Integer toPageNo, String teacherName) throws  Exception{
         PagingVO pagingVO = new PagingVO();
         pagingVO.setToPageNo(toPageNo);
         pagingVO.setStringtemp(teacherName);

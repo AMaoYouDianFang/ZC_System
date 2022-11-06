@@ -1,13 +1,12 @@
 <%--
   Created by IntelliJ IDEA.
   User: mac
-  Date: 2018/3/5
-  Time: 下午8:58
+  Date: 2018/2/26
+  Time: 下午6:13
   To change this template use File | Settings | File Templates.
 --%>
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <!DOCTYPE html>
 <html>
@@ -20,8 +19,32 @@
     <!-- 引入JQuery  bootstrap.js-->
     <script src="/js/jquery-3.2.1.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
+    <style>
+        .alert {
+            display: none;
+            position: fixed;
+            top: 80%;
+            left: 10%;
+            min-width: 900px;
+            max-width: 1000px;
+            transform: translate(-50%,-50%);
+            z-index: 99999;
+            text-align: center;
+            padding: 15px;
+            border-radius: 3px;
+        }
+        .alert-success {
+            color: #3c763d;
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+        }
+    </style>
+
+
+
 </head>
 <body>
+<!-- 顶栏 -->
 
 <!-- 中间主体 -->
 <div class="container" id="content">
@@ -31,197 +54,92 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="row">
-                        <h1 class="col-md-5">记事表格</h1>
-                        <button class="btn btn-success col-md-1" style="margin-top: 20px; float:right"
-                                onClick="location.href='/teacher/addNoteTable?dicid=${dicid}&currentpage=${pagingVO.curentPageNo}'">
-                            添加信息
-                            <sapn class="glyphicon glyphicon-plus"/>
-                        </button>
-                        <%--<button class="btn btn-warning col-md-1" style="margin-top: 20px; float:right"--%>
-                                <%--onClick="saveAsExcelFile()">--%>
-                            <%--打印信息--%>
-                            <%--<sapn class="glyphicon glyphicon-align-justify"/>--%>
-                        <%--</button>--%>
+                        <h1 style="text-align: center;">表格: ${texttitle}</h1>
                     </div>
                 </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" role="form" action="#" id="editfrom" >
 
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th style="width:4%">序号</th>
-                        <th style="width: 8%">姓名</th>
-                        <th style="width: 10%;">学校</th>
-                        <th style="width:5%">状态</th>
-                        <th style="width: 10%">课程</th>
 
-                        <th>备注</th>
-                        <th style="width: 10%">操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <c:forEach items="${noteTableList}" var="item" varStatus="status">
-                        <tr>
-                            <td>${(pagingVO.curentPageNo-1)*(pagingVO.pageSize)+status.index + 1}</td>
-                            <td>${item.stuname}</td>
-                            <td>${item.stuschool}</td>
-                            <td>${item.stugrade}</td>
-                            <td>${item.stucourse}</td>
 
-                            <td>${item.remarktext}</td>
-                            <td>
-                                <button type="button" class="btn btn-danger  btn-xs"
-                                        onclick="remove('${item.noteid}','${item.dicid}','${pagingVO.curentPageNo}')">删除
-                                </button>
+                        <div class="form-group">
+                            <input class="hidden" name="textid" value="${textid}">
+                            <div id="div1">
+                                ${textDic}
+                            </div>
 
-                                <button type="button" class="btn btn-info  btn-xs"
-                                        onclick="location.href='/teacher/modifyNoteTable?noteID=${item.noteid}&dicid=${item.dicid}&page=${pagingVO.curentPageNo}'">修改
-                                </button>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                    </tbody>
-                </table>
-                <div class="panel-footer">
-                    <c:if test="${pagingVO != null}">
-                        <nav style="text-align: center">
-                            <ul class="pagination">
-                                <li><a href="/teacher/editNoteTable?dicid=${dicid}&page=1">首页</a></li>
-                                <c:if test="${pagingVO.curentPageNo <= 1}">
-                                    <li><a href="/teacher/editNoteTable?dicid=${dicid}&page=1">&laquo;上一页</a></li>
-                                </c:if>
-                                <c:if test="${pagingVO.curentPageNo > 1}">
-                                    <li><a href="/teacher/editNoteTable?dicid=${dicid}&page=${pagingVO.upPageNo}">&laquo;上一页</a></li>
-                                </c:if>
-
-                                <li class="active"><a href="">${pagingVO.curentPageNo}</a></li>
-                                <c:if test="${pagingVO.curentPageNo+1 <= pagingVO.totalCount}">
-                                    <li>
-                                        <a href="/teacher/editNoteTable?dicid=${dicid}&page=${pagingVO.curentPageNo+1}">${pagingVO.curentPageNo+1}</a>
-                                    </li>
-                                </c:if>
-                                <c:if test="${pagingVO.curentPageNo+2 <= pagingVO.totalCount}">
-                                    <li>
-                                        <a href="/teacher/editNoteTable?dicid=${dicid}&page=${pagingVO.curentPageNo+2}">${pagingVO.curentPageNo+2}</a>
-                                    </li>
-                                </c:if>
-                                <c:if test="${pagingVO.curentPageNo+3 <= pagingVO.totalCount}">
-                                    <li>
-                                        <a href="/teacher/editNoteTable?dicid=${dicid}&page=${pagingVO.curentPageNo+3}">${pagingVO.curentPageNo+3}</a>
-                                    </li>
-                                </c:if>
-                                <c:if test="${pagingVO.curentPageNo+4 <= pagingVO.totalCount}">
-                                    <li>
-                                        <a href="/teacher/editNoteTable?dicid=${dicid}&page=${pagingVO.curentPageNo+4}">${pagingVO.curentPageNo+4}</a>
-                                    </li>
-                                </c:if>
-
-                                <c:if test="${pagingVO.curentPageNo <pagingVO.totalCount}">
-                                    <li><a href="/teacher/editNoteTable?dicid=${dicid}&page=${pagingVO.nextPageNo}">下一页&raquo;</a></li>
-                                </c:if>
-                                <c:if test="${pagingVO.curentPageNo >=pagingVO.totalCount}">
-                                    <li><a href="/teacher/editNoteTable?dicid=${dicid}&page=${pagingVO.totalCount}">下一页&raquo;</a></li>
-                                </c:if>
-                                <li><a href="/teacher/editNoteTable?dicid=${dicid}&page=${pagingVO.totalCount}">尾页</a></li>
-                                <li><a><input id="toPage" style="height: 18px; width: 50px;border: 0px;outline:none;" type="text" placeholder="共${pagingVO.totalCount}页"/></a></li>
-                                <li><a href="javascript:void(0);" onclick="jumpPage()">跳转</a></li>
-                            </ul>
-                        </nav>
-                    </c:if>
+                            <%--                            <textarea style="width: 100%; resize: none; border: none; font-size:18px;" rows="25"--%>
+                            <%--                                      name="content">${textDic}</textarea>--%>
+                            <input class="hidden" name="currentPage" value="${currentPage}">
+                        </div>
+                        <div class="form-group" style="text-align: center">
+                            <button class="btn btn-default" type="submit" onclick="addNoteText();">保存</button>
+                            <button class="btn btn-default" type="reset">重置</button>
+                        </div>
+                    </form>
                 </div>
 
             </div>
 
         </div>
-
     </div>
-</div>
 </div>
 <div class="container" id="footer">
     <div class="row">
         <div class="col-md-12"></div>
     </div>
 </div>
+<script type="text/javascript" src="/js/wangEditor.min.js"></script>
+
+
 </body>
-<script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.min.js"></script>
-<script src="https://cdn.bootcss.com/xlsx/0.11.3/xlsx.full.min.js"></script>
 <script type="text/javascript">
     $("#nav5").addClass("active");
+    var E = window.wangEditor
+    var editor = new E('#div1')
+    editor.customConfig.menus = [
+        'head',  // 标题
+        'bold',  // 粗体
+        'fontSize',  // 字号
+        'fontName',  // 字体
+        'italic',  // 斜体
+        'underline',  // 下划线
+        'strikeThrough',  // 删除线
+        'foreColor',  // 文字颜色
+        'backColor',  // 背景颜色
+        'link',  // 插入链接
+        'list',  // 列表
+        'justify',  // 对齐方式
+        'table',  // 表格
+        'undo',  // 撤销
+        'redo'  // 重复
+    ]
+    editor.create()
+    editor.$textContainerElem.css('height', '600px !important'); //设置高度
+    var textid = $("input[name='textid']").val()
+    var currentPage = $("input[name='currentPage']").val()
 
-    function confirmd() {
-        var msg = "您真的确定要删除吗？！";
-        if (confirm(msg) == true) {
-            return true;
-        } else {
-            return false;
-        }
-    };
 
-    $("#sub").click(function () {
-        $("#form1").submit();
-    });
+    function addNoteText() {
+        var data1 = JSON.stringify({'textid': textid.toString(),"editor": editor.txt.html().toString()});
+        $.ajax({
+            type : "POST",
+            url : "/teacher/editNoteTable",
+            dataType : 'text',
+            data : JSON.stringify(data1),
+            contentType: "application/json;charset=utf-8",
+            success: function(result) {
+                if ("success" == result) {
+                    window.location.href = "/teacher/showTextDic?page=" + currentPage;
+                }
+            },
+            error: function(result) {
+                alert("提交失败");
+            }
 
-    <c:if test="${pagingVO != null}">
-    if (${pagingVO.curentPageNo} == ${pagingVO.totalCount}) {
-        $(".pagination li:nth-last-child(3)").addClass("disabled");
-        $(".pagination li:nth-last-child(4)").addClass('disabled'); // Disables visually
-    };
-
-    if (${pagingVO.curentPageNo} == ${1}) {
-        $(".pagination li:nth-child(1)").addClass("disabled");
-        $(".pagination li:nth-child(2)").addClass("disabled");
-    };
-    </c:if>
-
-    function jumpPage(){
-        var page = $("#toPage").val();
-        if (page==''){return;}
-        if(page<=${pagingVO.totalCount}){
-            window.location.href="/teacher/editNoteTable?dicid="+ ${dicid}+ "&page=" + page;
-        }
+        });
     }
 
-    <%--function s2ab(s) {--%>
-        <%--const buf = new ArrayBuffer(s.length);--%>
-        <%--const view = new Uint8Array(buf);--%>
-        <%--for (var i = 0; i !== s.length; ++i) {--%>
-            <%--view[i] = s.charCodeAt(i) & 0xFF;--%>
-        <%--};--%>
-        <%--return buf;--%>
-    <%--}--%>
-    <%--function saveAsExcelFile() {--%>
 
-        <%--var data = new Array();   //先声明一维--%>
-        <%--for(var k=0;k<=${noteTableList.size()};k++){        //一维长度为i,i为变量，可以根据实际情况改变--%>
-            <%--data[k]=new Array();    //声明二维，每一个一维数组里面的一个元素都是一个数组--%>
-
-        <%--}--%>
-        <%--data[0] =  ["序号", "姓名", "学校", "年级", "课程", "备注"];--%>
-
-        <%--<c:forEach items="${allNoteTableList}" var="item" varStatus="status" >--%>
-        <%--data[${status.index+1}]=[ ${status.index+1},'${item.stuname}','${item.stuschool}','${item.stugrade}','${item.stucourse}', '${item.remarktext}'];--%>
-        <%--</c:forEach>--%>
-
-        <%--var wopts = { bookType:'xlsx', type:'binary' };--%>
-        <%--var fileName = "download.xlsx";--%>
-        <%--const ws = XLSX.utils.aoa_to_sheet(data);--%>
-        <%--const wb = XLSX.utils.book_new();--%>
-        <%--XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');--%>
-        <%--const wbout = XLSX.write(wb, wopts);--%>
-        <%--saveAs(new Blob([s2ab(wbout)]), fileName); // 保存为文件--%>
-    <%--}--%>
-
-    function remove(noteID,dicID,page) {
-        var msg = "您确定要删除吗";
-        if (confirm(msg) == true) {
-            window.location.href="/teacher/removeNoteTable?noteID=" + noteID + "&dicID="+ dicID + "&currentPage=" +page;
-            return true;
-        } else {
-            return false;
-        }
-    }
 </script>
 </html>
-
-
-
-

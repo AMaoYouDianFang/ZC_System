@@ -6,7 +6,7 @@ public class TextDic {
     private String title;
     private String content;
 
-    private Integer texttype; //用于区分 0标记班级管理 1表示招生信息管理
+    private Integer texttype; //用于区分 0标记班级管理 1表示招生信息管理  2 班级管理表格   3 招生管理表格
 
     public Integer getTexttype() {
         return texttype;

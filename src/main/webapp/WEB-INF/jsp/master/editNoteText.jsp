@@ -19,6 +19,9 @@
     <!-- 引入JQuery  bootstrap.js-->
     <script src="/js/jquery-3.2.1.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
+
+
+
 </head>
 <body>
 <!-- 顶栏 -->
@@ -35,18 +38,22 @@
                     </div>
                 </div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" action="/master/editNoteText" id="editfrom" method="post">
+                    <form class="form-horizontal" role="form" action="#" id="editfrom" >
 
 
 
                         <div class="form-group">
                             <input class="hidden" name="textid" value="${textid}">
-                            <textarea style="width: 100%; resize: none; border: none; font-size:18px;" rows="25"
-                                      name="content">${textDic}</textarea>
+                            <div id="div1">
+                                ${textDic}
+                            </div>
+
+                            <%--                            <textarea style="width: 100%; resize: none; border: none; font-size:18px;" rows="25"--%>
+                            <%--                                      name="content">${textDic}</textarea>--%>
                             <input class="hidden" name="currentPage" value="${currentPage}">
                         </div>
                         <div class="form-group" style="text-align: center">
-                            <button class="btn btn-default" type="submit">保存</button>
+                            <button class="btn btn-default" type="submit" onclick="addNoteText();">保存</button>
                             <button class="btn btn-default" type="reset">重置</button>
                         </div>
                     </form>
@@ -62,8 +69,56 @@
         <div class="col-md-12"></div>
     </div>
 </div>
+<script type="text/javascript" src="/js/wangEditor.min.js"></script>
+
+
 </body>
 <script type="text/javascript">
     $("#nav5").addClass("active");
+    var E = window.wangEditor
+    var editor = new E('#div1')
+    editor.customConfig.menus = [
+        'head',  // 标题
+        'bold',  // 粗体
+        'fontSize',  // 字号
+        'fontName',  // 字体
+        'italic',  // 斜体
+        'underline',  // 下划线
+        'strikeThrough',  // 删除线
+        'foreColor',  // 文字颜色
+        'backColor',  // 背景颜色
+        'link',  // 插入链接
+        'list',  // 列表
+        'justify',  // 对齐方式
+        //'table',  // 表格
+        'undo',  // 撤销
+        'redo'  // 重复
+    ]
+    editor.create()
+    editor.$textContainerElem.css('height', '600px !important'); //设置高度
+    var textid = $("input[name='textid']").val()
+    var currentPage = $("input[name='currentPage']").val()
+
+    function addNoteText() {
+        var data1 = JSON.stringify({'textid': textid.toString(),"editor": editor.txt.html().toString()});
+        $.ajax({
+            type : "POST",
+            url : "/master/editNoteText",
+            dataType : 'text',
+            data : JSON.stringify(data1),
+            contentType: "application/json;charset=utf-8",
+            success: function(result) {
+                if ("success" == result) {
+                    window.location.href = "/master/showTextDic?page=" + currentPage;
+                }
+            },
+            error: function(result) {
+                alert("提交失败");
+            }
+
+        });
+    }
+
+
 </script>
 </html>
